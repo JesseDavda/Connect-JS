@@ -50,7 +50,6 @@ BOXES.forEach(box => {
   box.addEventListener("click", function () {
     const idNum = this.id.substr(4);
     const column = idNum % 7;
-    const row = Math.floor(idNum / 7);
     const freePosition = getFreeBoxInColumn(column);
 
     GAME_BOARD[freePosition][column] = PLAYER_TURN ? 1 : 2;
@@ -58,9 +57,20 @@ BOXES.forEach(box => {
     let targetPiece = document.querySelector(`#box-${(freePosition * 7) + column}`);
     targetPiece.classList.remove('prospective');
     targetPiece.classList.add((PLAYER_TURN) ? 'red' : 'yellow');
-    checkIfWinner((PLAYER_TURN ? 1 : 2));
+    
+    const WIN_MODAL = document.querySelector('.win-modal-container');
+    const WINNING_TEXT = document.querySelector('.win-modal-text');
+    const WINNING_CHIP = document.querySelector('.win-modal-chip');
+
+    let tempPlayerTurn = PLAYER_TURN;
 
     switchPlayer();
+    
+    if(checkIfWinner((tempPlayerTurn ? 1 : 2)).won) {
+      WINNING_TEXT.innerHTML = (tempPlayerTurn ? "Player 1 (Red) Wins!" : "Player 2 (Yellow) Wins!");
+      WINNING_CHIP.classList.add(tempPlayerTurn ? "red" : "yellow");
+      WIN_MODAL.classList.add('show-flex');
+    }
   });
 });
 
@@ -68,7 +78,13 @@ const REFRESH = document.querySelector('.refresh');
 
 REFRESH.addEventListener("click", function() {
   window.location.reload();
-})
+});
+
+const WIN_REFRESH = document.querySelector('.win-modal-refresh-button');
+
+WIN_REFRESH.addEventListener("click", function() {
+  window.location.reload();
+});
 
 function switchPlayer() {
   PLAYER_TURN = !PLAYER_TURN;
@@ -84,7 +100,10 @@ function getFreeBoxInColumn(column) {
 }
 
 function checkIfWinner(player) {
-  console.log(GAME_BOARD)
+  const winObj = {
+    won: false,
+    player: 0
+  }
 
   //Check horizontally if there is a winner;
   for(let i = 0; i < 6; i++) {
@@ -93,7 +112,9 @@ function checkIfWinner(player) {
         count++;
         if(count >= 4) { 
           console.log('There has been a horizontal win for player: ', player);
-          return 1;
+          winObj.won = true;
+          winObj.player = player;
+          return winObj;
         }
       } else {
         count = 0;
@@ -108,7 +129,9 @@ function checkIfWinner(player) {
         count++;
         if(count >= 4) {
           console.log('There has been a vertical win for player: ', player);
-          return 1;
+          winObj.won = true;
+          winObj.player = player;
+          return winObj;
         }
       } else {
         count = 0;
@@ -125,7 +148,9 @@ function checkIfWinner(player) {
         count++;
         if(count >= 4) {
           console.log('There has been a diagonal win for player: ', player);
-          return 1;
+          winObj.won = true;
+          winObj.player = player;
+          return winObj;
         }
       } else {
         count = 0;
@@ -140,7 +165,9 @@ function checkIfWinner(player) {
         count++;
         if(count >= 4) {
           console.log('There has been a diagnoal win for player: ', player);
-          return 1;
+          winObj.won = true;
+          winObj.player = player;
+          return winObj;
         }
       } else {
         count = 0;
@@ -155,7 +182,9 @@ function checkIfWinner(player) {
         count++;
         if(count >= 4) {
           console.log('There has been a diagonal win for player: ', player);
-          return 1;
+          winObj.won = true;
+          winObj.player = player;
+          return winObj;
         }
       } else {
         count = 0;
@@ -170,7 +199,9 @@ function checkIfWinner(player) {
         count++;
         if(count >= 4) {
           console.log('There has been a diagonal win for player: ', player);
-          return 1;
+          winObj.won = true;
+          winObj.player = player;
+          return winObj;
         }
       } else {
         count = 0;
