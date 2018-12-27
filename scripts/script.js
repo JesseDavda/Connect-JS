@@ -1,14 +1,20 @@
 const GRID_SIZE = 42;
-
-let PLAYER_TURN = true;
-
 const CONTAINER = document.querySelector(".connect-block");
 const PLAYER_INDICATOR = document.querySelector("#player-text");
-let GAME_BOARD = [];
-let NUM_IN_ROW = 0;
 
-let COLUMN = 0, ROW = 0;
-// const BOX = document.getElementsByTagName('box');
+let PLAYER_TURN = true;
+let GAME_BOARD = [
+  [0, 0, 0, 0, 0, 0, 2],
+  [0, 0, 0, 0, 0, 1, 1],
+  [0, 0, 0, 0, 1, 2, 2],
+  [0, 0, 0, 2, 2, 2, 1],
+  [0, 0, 1, 2, 2, 1, 2],
+  [0, 1, 2, 1, 1, 2, 1]
+];
+let NUM_IN_ROW = 0;
+let COUNT = 0;
+let COLUMN = 0;
+let ROW = 0;
 
 const populateGrid = () => {
   let boxTemplate = "";
@@ -19,13 +25,13 @@ const populateGrid = () => {
 }
 populateGrid();
 
-const populateDataStructure = () => {
-  for(let x = 0; x < 6; x++) {
-    let tempArray = [0, 0, 0, 0, 0, 0, 0];
-    GAME_BOARD.push(tempArray);
-  }
-}
-populateDataStructure();
+// const populateDataStructure = () => {
+//   for(let x = 0; x < 6; x++) {
+//     let tempArray = [0, 0, 0, 0, 0, 0, 0];
+//     GAME_BOARD.push(tempArray);
+//   }
+// }
+// populateDataStructure();
 
 const BOXES = document.querySelectorAll('box');
 
@@ -59,7 +65,7 @@ BOXES.forEach(box => {
     let targetPiece = document.querySelector(`#box-${(freePosition * 7) + column}`);
     targetPiece.classList.remove('prospective');
     targetPiece.classList.add((PLAYER_TURN) ? 'red' : 'yellow');
-    // checkIfWinner(freePosition, row, (PLAYER_TURN ? 1 : 2));
+    checkIfWinner((PLAYER_TURN ? 1 : 2));
 
     switchPlayer();
   });
@@ -72,7 +78,7 @@ REFRESH.addEventListener("click", function() {
 })
 
 function switchPlayer() {
-  PLAYER_TURN = !PLAYER_TURN;
+  PLAYER_TURN = PLAYER_TURN;
   PLAYER_INDICATOR.innerHTML = PLAYER_TURN ? 'Player 1' : "Player 2";
 }
 
@@ -84,38 +90,98 @@ function getFreeBoxInColumn(column) {
   return (GAME_BOARD[i][column] === 0) ? i : (i - 1);
 }
 
-// function checkIfWinner(column, row, player) {
-//   console.log('checking if winner', column, row, player);
-//   NUM_IN_ROW = 0;
-//
-//   if(NUM_IN_ROW < 4 && column !== 5) {
-//     if(GAME_BOARD[row][column + 1] === player) {
-//       NUM_IN_ROW++;
-//       checkIfWinner((column + 1), row, player);
-//       NUM_IN_ROW++;
-//     } else if(GAME_BOARD[row][column - 1] === player) {
-//       NUM_IN_ROW++;
-//       checkIfWinner((column - 1), row, player);
-//     } else if(GAME_BOARD[row + 1][column] === player) {
-//       NUM_IN_ROW++;
-//       checkIfWinner(column, (row + 1), player);
-//     } else if(GAME_BOARD[row - 1][column] === player) {
-//       NUM_IN_ROW++;
-//       checkIfWinner(column, (row - 1), player);
-//     } else if(GAME_BOARD[row + 1][column + 1] === player) {
-//       NUM_IN_ROW++;
-//       checkIfWinner((column + 1), (row + 1), player);
-//     } else if(GAME_BOARD[row - 1][column - 1] === player) {
-//       NUM_IN_ROW++;
-//       checkIfWinner((column - 1), (row - 1), player);
-//     } else if(GAME_BOARD[row + 1][column - 1] === player) {
-//       NUM_IN_ROW++;
-//       checkIfWinner((column - 1), (row + 1), player);
-//     } else if(GAME_BOARD[row - 1][column + 1] === player) {
-//       NUM_IN_ROW++;
-//       checkIfWinner((column + 1), (row - 1), player);
-//     }
-//   } else if(NUM_IN_ROW === 4) {
-//     console.log("player ", player, " has won!");
-//   }
-// }
+function checkIfWinner(player) {
+  console.log(GAME_BOARD)
+
+  //Check horizontally if there is a winner;
+  for(let i = 0; i < 6; i++) {
+    for(let j = 0; j < 7; j++) {
+      if(GAME_BOARD[i][j] === player) {
+        count++;
+        if(count >= 4) { 
+          console.log('There has been a horizontal win for player: ', player);
+          return 1;
+        }
+      } else {
+        count = 0;
+      }
+    }
+  }
+
+  //Check vertically if there is a winner 
+  for(let i = 0; i < 7; i++) {
+    for(let j = 0; j < 6; j++) {
+      if(GAME_BOARD[j][i] === player) {
+        count++;
+        if(count >= 4) {
+          console.log('There has been a vertical win for player: ', player);
+          return 1;
+        }
+      } else {
+        count = 0;
+      }
+    }
+  }
+
+  var row, col;
+
+  //Check diagonally from top left to bottom right (bottom half of board - the last three rows) for winner
+  for(let r = 0; r < 3; r++) {
+    for(row = r, col = 0; row < 6 && col < 7; row++, col++) {
+      if(GAME_BOARD[row][col] === player) {
+        count++;
+        if(count >= 4) {
+          console.log('There has been a diagonal win for player: ', player);
+          return 1;
+        }
+      } else {
+        count = 0;
+      }
+    }
+  }
+
+  // Check diagonally from top left to bottom right (top half of board - the last three rows) for winner
+  for(let c = 0; c < 4; c++) {
+    for(row = 0, col = c; row < 6 && col < 7; row++, col++) {
+      if(GAME_BOARD[row][col] === player) {
+        count++;
+        if(count >= 4) {
+          console.log('There has been a diagnoal win for player: ', player);
+          return 1;
+        }
+      } else {
+        count = 0;
+      }
+    }
+  }
+
+  //check top left half for diagonals from bottom left to top right
+  for(let r = 5; r >= 3; r--) {
+    for(row = r, col = 0; row >= 0 && col <= 6; row--, col++) {
+      if(GAME_BOARD[row][col] === player) {
+        count++;
+        if(count >= 4) {
+          console.log('There has been a diagonal win for player: ', player);
+          return 1;
+        }
+      } else {
+        count = 0;
+      }
+    }
+  }
+
+  // //check diagonally from top right to middle left for winner
+  // for(let c = 0; c < 4; c++) {
+  //   for(row = 6, col = c; row > 0 && col < 7; row--, col++) {
+  //     if(GAME_BOARD[row][col] === player) {
+  //       count++;
+  //       if(count >= 4) {
+  //         console.log('There has been a diagonal win for player: ', player);
+  //         return 1;
+  //       }
+  //     } else {
+  //       count = 0;
+  //     }
+  //   }
+  // }
+}
