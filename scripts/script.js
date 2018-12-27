@@ -3,14 +3,7 @@ const CONTAINER = document.querySelector(".connect-block");
 const PLAYER_INDICATOR = document.querySelector("#player-text");
 
 let PLAYER_TURN = true;
-let GAME_BOARD = [
-  [0, 0, 0, 0, 0, 0, 2],
-  [0, 0, 0, 0, 0, 1, 1],
-  [0, 0, 0, 0, 1, 2, 2],
-  [0, 0, 0, 2, 2, 2, 1],
-  [0, 0, 1, 2, 2, 1, 2],
-  [0, 1, 2, 1, 1, 2, 1]
-];
+let GAME_BOARD = [];
 let NUM_IN_ROW = 0;
 let COUNT = 0;
 let COLUMN = 0;
@@ -25,13 +18,13 @@ const populateGrid = () => {
 }
 populateGrid();
 
-// const populateDataStructure = () => {
-//   for(let x = 0; x < 6; x++) {
-//     let tempArray = [0, 0, 0, 0, 0, 0, 0];
-//     GAME_BOARD.push(tempArray);
-//   }
-// }
-// populateDataStructure();
+const populateDataStructure = () => {
+  for(let x = 0; x < 6; x++) {
+    let tempArray = [0, 0, 0, 0, 0, 0, 0];
+    GAME_BOARD.push(tempArray);
+  }
+}
+populateDataStructure();
 
 const BOXES = document.querySelectorAll('box');
 
@@ -78,7 +71,7 @@ REFRESH.addEventListener("click", function() {
 })
 
 function switchPlayer() {
-  PLAYER_TURN = PLAYER_TURN;
+  PLAYER_TURN = !PLAYER_TURN;
   PLAYER_INDICATOR.innerHTML = PLAYER_TURN ? 'Player 1' : "Player 2";
 }
 
@@ -170,18 +163,18 @@ function checkIfWinner(player) {
     }
   }
 
-  // //check diagonally from top right to middle left for winner
-  // for(let c = 0; c < 4; c++) {
-  //   for(row = 6, col = c; row > 0 && col < 7; row--, col++) {
-  //     if(GAME_BOARD[row][col] === player) {
-  //       count++;
-  //       if(count >= 4) {
-  //         console.log('There has been a diagonal win for player: ', player);
-  //         return 1;
-  //       }
-  //     } else {
-  //       count = 0;
-  //     }
-  //   }
-  // }
+  //check diagonally from top right to middle left for winner
+  for(let c = 0; c < 4; c++) {
+    for(row = 5, col = c; row >= 0 && col <= 6; row--, col++) {
+      if(GAME_BOARD[row][col] === player) {
+        count++;
+        if(count >= 4) {
+          console.log('There has been a diagonal win for player: ', player);
+          return 1;
+        }
+      } else {
+        count = 0;
+      }
+    }
+  }
 }
