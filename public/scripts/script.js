@@ -66,7 +66,7 @@ BOXES.forEach(box => {
 
     switchPlayer();
     
-    if(checkIfWinner((tempPlayerTurn ? 1 : 2)).won) {
+    if(checkIfWinner((tempPlayerTurn ? 1 : 2))) {
       WINNING_TEXT.innerHTML = (tempPlayerTurn ? "Player 1 (Red) Wins!" : "Player 2 (Yellow) Wins!");
       WINNING_CHIP.classList.add(tempPlayerTurn ? "red" : "yellow");
       WIN_MODAL.classList.add('show-flex');
@@ -100,11 +100,6 @@ function getFreeBoxInColumn(column) {
 }
 
 function checkIfWinner(player) {
-  const winObj = {
-    won: false,
-    player: 0
-  }
-
   //Check horizontally if there is a winner;
   for(let i = 0; i < 6; i++) {
     for(let j = 0; j < 7; j++) {
@@ -112,9 +107,7 @@ function checkIfWinner(player) {
         count++;
         if(count >= 4) { 
           console.log('There has been a horizontal win for player: ', player);
-          winObj.won = true;
-          winObj.player = player;
-          return winObj;
+          return true;
         }
       } else {
         count = 0;
@@ -129,9 +122,7 @@ function checkIfWinner(player) {
         count++;
         if(count >= 4) {
           console.log('There has been a vertical win for player: ', player);
-          winObj.won = true;
-          winObj.player = player;
-          return winObj;
+          return true;
         }
       } else {
         count = 0;
@@ -140,7 +131,6 @@ function checkIfWinner(player) {
   }
 
   var row, col;
-
   //Check diagonally from top left to bottom right (bottom half of board - the last three rows) for winner
   for(let r = 0; r < 3; r++) {
     for(row = r, col = 0; row < 6 && col < 7; row++, col++) {
@@ -148,9 +138,7 @@ function checkIfWinner(player) {
         count++;
         if(count >= 4) {
           console.log('There has been a diagonal win for player: ', player);
-          winObj.won = true;
-          winObj.player = player;
-          return winObj;
+          return true;
         }
       } else {
         count = 0;
@@ -165,9 +153,7 @@ function checkIfWinner(player) {
         count++;
         if(count >= 4) {
           console.log('There has been a diagnoal win for player: ', player);
-          winObj.won = true;
-          winObj.player = player;
-          return winObj;
+          return true;
         }
       } else {
         count = 0;
@@ -182,9 +168,7 @@ function checkIfWinner(player) {
         count++;
         if(count >= 4) {
           console.log('There has been a diagonal win for player: ', player);
-          winObj.won = true;
-          winObj.player = player;
-          return winObj;
+          return true;
         }
       } else {
         count = 0;
@@ -199,9 +183,7 @@ function checkIfWinner(player) {
         count++;
         if(count >= 4) {
           console.log('There has been a diagonal win for player: ', player);
-          winObj.won = true;
-          winObj.player = player;
-          return winObj;
+          return true;
         }
       } else {
         count = 0;
